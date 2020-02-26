@@ -128,5 +128,3 @@ function init() {
 	}, 1000);
 	document.getElementById('highScore').innerText = highScore;
 }
-
-init();
