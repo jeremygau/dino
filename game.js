@@ -1,20 +1,18 @@
-function Dino() {
-	this.id = "dino";
-	this.width = 40;
-	this.height = 40;
-	this.x = 0;
-	this.y = bord_inf - this.width;
-	this.vy = 0;
-}
-
-function Obstacle(x, y, height, width) {
-	this.id = 'obstacle';
-	this.x = x - height;
-	this.y = y - width;
-	this.height = height;
-	this.width = width;
-	this.vx = 5;
-}
+const dimTerrain = document.getElementById('terrain').getBoundingClientRect();
+const right_border = dimTerrain.width;
+const bottom_border = dimTerrain.height;
+let indexObstacle = 0;
+let objects;
+let dino;
+let global_speed;
+let jump;
+let jumpTime;
+let dino_speed;
+let jumpingTime;
+let score;
+let highScore = 0;
+let timer;
+let obstacleCreation;
 
 function place_objects(objects) {
 	for(let i = 0; i < objects.length; i++) {
@@ -29,11 +27,48 @@ function update() {
 	out();
 	contact();
 	jumping();
-	obstacle.vx *= 1.00001;
-	obstacle.x -= obstacle.vx;
-	score += obstacle.vx;
-	place_objects([dino, obstacle]);
+	document.getElementById('score').innerText = parseInt(score).toString();
+	global_speed *= 1.0001;
+	for (let i = 1; i < objects.length; i++) {
+		objects[i].x -= global_speed;
+	}
+	score += global_speed;
+	place_objects(objects);
 }
+
+function Dino() {
+	this.id = "dino";
+	this.width = 40;
+	this.height = 40;
+	this.x = 0;
+	this.y = bottom_border - this.width;
+	this.vy = 0;
+}
+
+function Obstacle(height, width, id) {
+	this.id = id;
+	this.x = right_border - height;
+	this.y = bottom_border - width;
+	this.height = height;
+	this.width = width;
+}
+
+function addObstacle(height, width) {
+	let element = document.createElement('div');
+	let newId = 'obstacle' + indexObstacle;
+	element.id = newId;
+	document.getElementById('terrain').appendChild(element);
+	var object = new Obstacle(height, width, newId);
+	objects.push(object);
+	indexObstacle++;
+	element.style.left = object.x + "px";
+	element.style.top = object.y + "px";
+	element.style.backgroundColor = 'black';
+	element.style.position = 'absolute';
+	element.style.width = object.width + "px";
+	element.style.height = object.height+ "px";
+}
+
 function jumping() {
 	if (jump === true) {
 		jumpTime ++;
@@ -45,56 +80,54 @@ function jumping() {
 	}
 }
 
-function out() {
-	if (obstacle.x < 0) {
-		obstacle.x = bord_droit - obstacle.width;
-	}
-
-}
-
-function contact() {
-	if (obstacle.x < dino.width
-	&& obstacle.y < dino.y + dino.height) {
-		obstacle.vx = 0;
-		clearInterval(timer);
-	}
-}
-
 window.addEventListener("keypress", event_handler);
 
 function event_handler(event) {
 	if (event.key === " " && jump === false) {
 		jump = true;
 		jumpTime = 0;
-		dino.vy = vitesse(jumpTime);
+		dino.vy = dino_speed;
 	}
 }
 
 function vitesse(t) {
- return vitesse_init - t;
+	return dino_speed - t;
 }
 
-var dino;
-var obstacle;
+function out() {
+	if (objects[1].x < 0) {
+		document.getElementById('terrain').removeChild(document.getElementById(objects[1].id));
+		objects.splice(1,1);
+	}
+}
 
-var jump;
-var jumpTime;
-var jumpingTime = 31;
-var vitesse_init = 15;
-
-var dimTerrain = document.getElementById('terrain').getBoundingClientRect();
-var bord_droit = dimTerrain.width;
-var bord_inf = dimTerrain.height;
-var score;
-
-var timer;
+function contact() {
+	if (objects[1].x < dino.width
+		&& objects[1].y < dino.y + dino.height) {
+		clearInterval(timer);
+		clearInterval(obstacleCreation);
+	}
+	if (score > highScore) {
+		highScore = score;
+	}
+}
 
 function init() {
-	dino = new Dino();
-	obstacle = new Obstacle(bord_droit, bord_inf, 40, 40);
+	indexObstacle = 0;
+	dino_speed = 15;
+	jumpingTime = dino_speed * 2 + 1;
+	global_speed = 5;
+	objects = [];
 	score = 0;
 	jump = false;
+	dino = new Dino();
 	timer = setInterval(update, 10);
+	objects.push(dino);
+	addObstacle(40,40);
+	obstacleCreation = setInterval(function () {
+		addObstacle(40, 40);
+	}, 1000);
+	document.getElementById('highScore').innerText = highScore;
 }
 
 init();

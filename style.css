@@ -3,6 +3,24 @@
 	position: relative;
 }
 
+#highScore {
+	position: absolute;
+	top: 0;
+	right: 70px;
+}
+
+#score {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+#vitesse {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
 #dino {
 	width: 40px;
 	height: 40px;
@@ -10,13 +28,5 @@
 	position: absolute;
 	bottom: 0;
 	left: 0;
-}
-
-#obstacle {
-	width: 40px;
-	height: 40px;
-	background-color: black;
-	position: absolute;
-	bottom: 0;
-	left: 0;
+	border-radius: 50%;
 }
