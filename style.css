@@ -1,6 +1,8 @@
 #terrain {
-	height: 200px;
+	height: 300px;
 	position: relative;
+	background-image: url('img/desert1.jpg');
+	background-size: contain;
 }
 
 #highScore {

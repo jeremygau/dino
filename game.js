@@ -1,4 +1,5 @@
-const dimTerrain = document.getElementById('terrain').getBoundingClientRect();
+const terrain = document.getElementById('terrain');
+const dimTerrain = terrain.getBoundingClientRect();
 const right_border = dimTerrain.width;
 const bottom_border = dimTerrain.height;
 let indexObstacle = 0;
@@ -13,6 +14,7 @@ let score;
 let highScore = 0;
 let timer;
 let obstacleCreation;
+let scroller;
 
 function place_objects(objects) {
 	for(let i = 0; i < objects.length; i++) {
@@ -27,13 +29,17 @@ function update() {
 	out();
 	contact();
 	jumping();
-	document.getElementById('score').innerText = parseInt(score).toString();
 	global_speed *= 1.0001;
 	for (let i = 1; i < objects.length; i++) {
 		objects[i].x -= global_speed;
 	}
 	score += global_speed;
 	place_objects(objects);
+	if (score > highScore) {
+		highScore = parseInt(score);
+	}
+	document.getElementById('score').innerText = parseInt(score).toString();
+	document.getElementById('highScore').innerText = "HI " + highScore.toString();
 }
 
 function Dino() {
@@ -58,7 +64,7 @@ function addObstacle(height, width) {
 	let newId = 'obstacle' + indexObstacle;
 	element.id = newId;
 	element.src = 'img/cactus.svg';
-	document.getElementById('terrain').appendChild(element);
+	terrain.appendChild(element);
 	var object = new Obstacle(height, width, newId);
 	objects.push(object);
 	indexObstacle++;
@@ -95,7 +101,7 @@ function vitesse(t) {
 
 function out() {
 	if (objects[1].x < 0) {
-		document.getElementById('terrain').removeChild(document.getElementById(objects[1].id));
+		terrain.removeChild(document.getElementById(objects[1].id));
 		objects.splice(1,1);
 	}
 }
@@ -105,9 +111,7 @@ function contact() {
 		&& objects[1].y < dino.y + dino.height) {
 		clearInterval(timer);
 		clearInterval(obstacleCreation);
-	}
-	if (score > highScore) {
-		highScore = score;
+		clearInterval(scroller);
 	}
 }
 
@@ -126,5 +130,31 @@ function init() {
 	obstacleCreation = setInterval(function () {
 		addObstacle(40, 40);
 	}, 1000);
-	document.getElementById('highScore').innerText = highScore;
+	document.getElementById('highScore').innerText = "HI " + highScore;
+	changeButton();
+	scroller = setInterval(scrollbackground, 10);
+
+}
+
+function changeButton() {
+	let button = document.getElementById('button');
+	button.innerHTML = "Rejouer <i class=\"material-icons right\">replay</i>";
+	button.onclick = replay;
+}
+
+function replay() {
+	clearInterval(timer);
+	clearInterval(obstacleCreation);
+	for (let i = 1; i < objects.length; i++) {
+		terrain.removeChild(document.getElementById(objects[i].id));
+	}
+	init();
+}
+
+// set which pixel row to start graphic from
+var offset = 0;
+
+function scrollbackground() {
+	offset --;
+	document.getElementById('terrain').style.backgroundPosition = offset + "px";
 }

@@ -11,16 +11,18 @@
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<!-- Compiled and minified JavaScript -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<!-- jQuery -->
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 </head>
 <body>
 <div class="container">
 	<div id="terrain" class="grey lighten-3">
-		<p id="highScore"></p>
-		<p id="score"></p>
+		<p id="highScore">HI 0</p>
+		<p id="score">0</p>
 		<img id="dino" src="img/dinosaur.svg"></img>
 	</div>
 	<div class="center">
-		<a class="waves-effect waves-light btn" onclick="init()"><i class="material-icons right">play_arrow</i>Jouer</a>
+		<a id="button" class="waves-effect waves-light btn" onclick="init()"><i class="material-icons right">play_arrow</i>Jouer</a>
 	</div>
 </div>
 
