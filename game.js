@@ -109,12 +109,15 @@ function out() {
 function contact() {
 	if (objects[1].x < dino.width
 		&& objects[1].y < dino.y + dino.height) {
-		clearInterval(timer);
-		clearInterval(obstacleCreation);
-		clearInterval(scroller);
+		clearAll();
 	}
 }
 
+function clearAll() {
+	clearInterval(timer);
+	clearInterval(obstacleCreation);
+	clearInterval(scroller);
+}
 function init() {
 	indexObstacle = 0;
 	dino_speed = 15;
@@ -143,8 +146,7 @@ function changeButton() {
 }
 
 function replay() {
-	clearInterval(timer);
-	clearInterval(obstacleCreation);
+	clearAll();
 	for (let i = 1; i < objects.length; i++) {
 		terrain.removeChild(document.getElementById(objects[i].id));
 	}
