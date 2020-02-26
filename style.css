@@ -1,0 +1,22 @@
+#terrain {
+	height: 200px;
+	position: relative;
+}
+
+#dino {
+	width: 40px;
+	height: 40px;
+	background-color: black;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+#obstacle {
+	width: 40px;
+	height: 40px;
+	background-color: black;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
