@@ -16,6 +16,27 @@ let timer;
 let obstacleCreation;
 let scroller;
 
+let obstacleTypes = [
+	["cactus", [40, 40]],
+	["double_cactus", [40, 60]]];
+
+function Dino() {
+	this.id = "dino";
+	this.width = 40;
+	this.height = 40;
+	this.x = 40;
+	this.y = bottom_border - this.width;
+	this.vy = 0;
+}
+
+function Obstacle(height, width, id) {
+	this.id = id;
+	this.x = right_border - width;
+	this.y = bottom_border - height;
+	this.height = height;
+	this.width = width;
+}
+
 function place_objects(objects) {
 	for(let i = 0; i < objects.length; i++) {
 		var object = objects[i];
@@ -42,36 +63,23 @@ function update() {
 	document.getElementById('highScore').innerText = "HI " + highScore.toString();
 }
 
-function Dino() {
-	this.id = "dino";
-	this.width = 40;
-	this.height = 40;
-	this.x = 0;
-	this.y = bottom_border - this.width;
-	this.vy = 0;
-}
-
-function Obstacle(height, width, id) {
-	this.id = id;
-	this.x = right_border - height;
-	this.y = bottom_border - width;
-	this.height = height;
-	this.width = width;
-}
-
 function addObstacle(height, width) {
+	let random = Math.floor((obstacleTypes.length)*Math.random());
+	let obstacleType = obstacleTypes[random];
 	let element = document.createElement('img');
 	let newId = 'obstacle' + indexObstacle;
 	element.id = newId;
-	element.src = 'img/cactus.svg';
+	element.src = 'img/' + obstacleType[0] + '.svg';
 	terrain.appendChild(element);
-	var object = new Obstacle(height, width, newId);
+	console.log(obstacleType);
+	var object = new Obstacle(obstacleType[1][0], obstacleType[1][1], newId);
 	objects.push(object);
 	indexObstacle++;
 	element.style.left = object.x + "px";
 	element.style.top = object.y + "px";
 	element.style.position = 'absolute';
 	element.style.height = object.height+ "px";
+	element.style.backgroundColor = "black";
 }
 
 function jumping() {
@@ -107,7 +115,7 @@ function out() {
 }
 
 function contact() {
-	if (objects[1].x < dino.width
+	if (dino.x < objects[1].x && objects[1].x < dino.width + dino.x
 		&& objects[1].y < dino.y + dino.height) {
 		clearAll();
 	}
