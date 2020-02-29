@@ -17,16 +17,15 @@ let obstacleCreation;
 let scroller;
 
 let obstacleTypes = [
-	["cactus", [40, 40]],
-	["double_cactus", [40, 60]]];
+	["cactus", [40, 27]],
+	["double_cactus", [40, 40]]];
 
 function Dino() {
 	this.id = "dino";
-	this.width = 40;
+	this.width = 39;
 	this.height = 40;
 	this.x = 40;
 	this.y = bottom_border - this.width;
-	this.vy = 0;
 }
 
 function Obstacle(height, width, id) {
@@ -47,8 +46,8 @@ function place_objects(objects) {
 }
 
 function update() {
-	out();
 	contact();
+	out();
 	jumping();
 	global_speed *= 1.0001;
 	for (let i = 1; i < objects.length; i++) {
@@ -63,7 +62,7 @@ function update() {
 	document.getElementById('highScore').innerText = "HI " + highScore.toString();
 }
 
-function addObstacle(height, width) {
+function addObstacle() {
 	let random = Math.floor((obstacleTypes.length)*Math.random());
 	let obstacleType = obstacleTypes[random];
 	let element = document.createElement('img');
@@ -71,7 +70,6 @@ function addObstacle(height, width) {
 	element.id = newId;
 	element.src = 'img/' + obstacleType[0] + '.svg';
 	terrain.appendChild(element);
-	console.log(obstacleType);
 	var object = new Obstacle(obstacleType[1][0], obstacleType[1][1], newId);
 	objects.push(object);
 	indexObstacle++;
@@ -79,7 +77,6 @@ function addObstacle(height, width) {
 	element.style.top = object.y + "px";
 	element.style.position = 'absolute';
 	element.style.height = object.height+ "px";
-	element.style.backgroundColor = "black";
 }
 
 function jumping() {
@@ -115,7 +112,9 @@ function out() {
 }
 
 function contact() {
-	if (dino.x < objects[1].x && objects[1].x < dino.width + dino.x
+	let currentObstacle = objects[1];
+	if ((dino.x + 1 < currentObstacle.x && currentObstacle.x < dino.width + dino.x
+		|| dino.x + 1 < currentObstacle.x + currentObstacle.width && currentObstacle.x + currentObstacle.width < dino.width + dino.x)
 		&& objects[1].y < dino.y + dino.height) {
 		clearAll();
 	}
@@ -128,7 +127,7 @@ function clearAll() {
 }
 function init() {
 	indexObstacle = 0;
-	dino_speed = 15;
+	dino_speed = 17;
 	jumpingTime = dino_speed * 2 + 1;
 	global_speed = 3;
 	objects = [];
@@ -137,13 +136,13 @@ function init() {
 	dino = new Dino();
 	timer = setInterval(update, 10);
 	objects.push(dino);
-	addObstacle(40,40);
+	addObstacle();
 	obstacleCreation = setInterval(function () {
-		addObstacle(40, 40);
+		addObstacle();
 	}, 1000);
 	document.getElementById('highScore').innerText = "HI " + highScore;
 	changeButton();
-	scroller = setInterval(scrollbackground, 10);
+	scroller = setInterval(scrollbackground, 100);
 
 }
 
